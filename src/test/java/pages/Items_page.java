@@ -60,7 +60,7 @@ public class Items_page {
 	public WebElement items_Input_delete_youSure_text;
 	
 	@FindBy (xpath = "//button [text()='Ok']")
-	public WebElement items_page_delete_ok_otn;
+	public WebElement items_page_delete_ok_btn;
 	
 	@FindBy (xpath = "//button [text()='Cancel']")
 	public WebElement items_page_delete_cancel_btn;

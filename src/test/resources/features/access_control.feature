@@ -36,9 +36,11 @@
 #       | name  | value | status  |
 #       | name1 |     5 | success |
 #       | name2 |     7 | Fail    |
+
+@regression
 Feature: Access control user management. Use cases for app access control
 
-  @valid_login
+  @valid_login @smoke_tests
   Scenario: As a user, I should be able to login
     Given I am on the login page
     And login page components exist

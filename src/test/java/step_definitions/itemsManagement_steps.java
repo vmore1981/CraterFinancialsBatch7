@@ -12,6 +12,7 @@ import pages.Access_control_page;
 import pages.Dashboard_page;
 import pages.Items_page;
 import utils.BrowserUtils;
+import utils.Driver;
 
 
 public class itemsManagement_steps {
@@ -20,7 +21,8 @@ public class itemsManagement_steps {
 	Dashboard_page dash_page = new Dashboard_page();
 	BrowserUtils utils = new BrowserUtils();
 	Items_page items = new Items_page();
-	String itemname;
+	String itemname = "";
+	String itemprice = "";
 	
 	
 	
@@ -56,6 +58,8 @@ public class itemsManagement_steps {
 	@When("I provide Item name {string} and price {string} unit {string} and description {string}")
 	public void i_provide_item_name_and_price_unit_and_description(String item_name, String item_price, String item_unit, String item_des) {
 		itemname = item_name + utils.randomNumber();
+		itemprice = item_price;
+		
 		System.out.println("Random item number is: " + itemname);
 		
 		items.items_input_page_name_box.sendKeys(itemname);
@@ -87,27 +91,69 @@ public class itemsManagement_steps {
 		items.items_page_filter_name_box.sendKeys(itemname);
 		
 		utils.waitUntilElementVisibleWithLocator(By.xpath("//a[text()='"+itemname+"']"));
-		//Assert.assertTrue(Driver.getdriver().findElement(By.xpath("//a[text()='"+itemname+"']").isDisplayed));
+		Assert.assertTrue(Driver.getDriver().findElement(By.xpath("//a[text()='"+itemname+"']")).isDisplayed());
 		
+		//Assert.assertTrue(Driver.getDriver().findElement(By.xpath("//span[contains(test(),'"+ itemprice.substring(0,2) +"')]")).isDisplayed());
 		
 		
 	}
 
 	
 	@Then("I delete the item")
-	public void i_delete_the_item() {
+	public void i_delete_the_item() throws InterruptedException {
 
-		items.items_page_3dot_menu.click();
-		utils.waitForElementToBeVisible(items.items_page_3dot_delete_option);
-		items.items_page_3dot_delete_option.click();		
-		utils.waitForElementToBeVisible(items.items_Input_delete_youSure_text);
-		Assert.assertTrue(items.items_Input_delete_youSure_text.isDisplayed());
-		items.items_page_delete_ok_otn.click();
-		utils.waitForElementToBeVisible(items.items_Input_noResultFound_text);
+		utils.waitForElementToBeVisible(items.items_page_3dot_menu);
+		utils.waitUntilElementClickable(items.items_page_3dot_menu);
+		Thread.sleep(1000);
+	    items.items_page_3dot_menu.click();
+	    utils.waitForElementToBeVisible(items.items_page_3dot_delete_option);
+	    Assert.assertTrue(items.items_page_3dot_delete_option.isDisplayed());
+	    items.items_page_3dot_delete_option.click();
+	    utils.waitForElementToBeVisible(items.items_page_delete_ok_btn);
+	    items.items_page_delete_ok_btn.click();
+	   
+	    utils.waitForElementToBeVisible(items.items_Input_noResultFound_text);
+	    Assert.assertTrue(items.items_Input_noResultFound_text.isDisplayed());
+	    
+		
+		
 	}
 	
 	
+	@When("I update the item price with {string}")
+	public void i_update_the_item_price_with(String newPrice) {
+		
+		itemprice = newPrice;
+		
+		
+		
+		items.items_page_3dot_menu.click();
+		utils.waitForElementToBeVisible(items.items_page_3dot_edit_option);
+		items.items_page_3dot_edit_option.click();
+		utils.waitForElementToBeVisible(items.items_page_edit_item_headerText);
+		Assert.assertTrue(items.items_page_edit_item_headerText.isDisplayed());
+		
+		items.items_input_page_price_box.clear();
+		items.items_input_page_price_box.sendKeys(newPrice);
+		
+		items.items_page_update_item_btn.click();
+		
+		utils.waitUntilUrlChanged("items");
+
+		Assert.assertTrue(items.items_items_text.isDisplayed());
 	
+		//*
+		//items.items_page_filter_btn.click();
+		//utils.waitForElementToBeVisible(items.items_page_filter_name_box);
+		//items.items_page_filter_name_box.sendKeys(itemname);
+		
+		//utils.waitUntilElementVisibleWithLocator(By.xpath("//a[text()='"+itemname+"']"));
+		
+
+		
+		
+	
+	}
 	
 	
 	

@@ -4,7 +4,7 @@
 Feature: Items Management
 
 
-@create_items
+@create_items @smoke_tests
 Scenario: As a user, I am able to create an item or service
 		Given As a "level1" user, I am logged in
 		And I navigate to Items tab
@@ -18,9 +18,19 @@ Scenario: As a user, I am able to create an item or service
 				
 
 
-@update_items
+@update_items @smoke_tests
 Scenario: As a user, I am able to updat e an item or service
 		Given As a "level1" user, I am logged in
+		And I navigate to Items tab
+		When I am click on Add Item button
+		Then I should be on New Item Page
+		When I provide Item name "coffee mug" and price "1200" unit "pc" and description "very wierd cofee mug"
+		And I click Save Item button
+		Then The item is added to the item list table
+		When I update the item price with "1500"
+		Then The item is added to the item list table
+		
+		And I delete the item 
 
 		
 		
