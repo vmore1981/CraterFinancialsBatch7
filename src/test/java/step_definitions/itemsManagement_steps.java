@@ -87,13 +87,13 @@ public class itemsManagement_steps {
 	public void the_item_is_added_to_the_item_list_table() throws InterruptedException {
 		
 		
-		if (items.items_success_message.isDisplayed()) {
-
-			Thread.sleep(5000);			
-		}
-		
-		utils.clickWithActionsClass(items.items_page_filter_btn);
-		//items.items_page_filter_btn.click();
+		//if (items.items_success_message.isDisplayed()) {
+		//	Thread.sleep(5000);			
+		//}
+	
+		items.items_success_message.click();
+		utils.waitForElementToBeVisible(items.items_page_filter_btn);
+		items.items_page_filter_btn.click();
 		
 		utils.waitForElementToBeVisible(items.items_page_filter_name_box);
 		items.items_page_filter_name_box.sendKeys(itemname);
