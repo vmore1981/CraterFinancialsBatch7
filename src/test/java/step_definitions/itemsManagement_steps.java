@@ -89,7 +89,7 @@ public class itemsManagement_steps {
 		
 		if (items.items_success_message.isDisplayed()) {
 
-			Thread.sleep(5);			
+			Thread.sleep(5000);			
 		}
 		
 		utils.clickWithActionsClass(items.items_page_filter_btn);
