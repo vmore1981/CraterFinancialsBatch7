@@ -85,8 +85,10 @@ public class itemsManagement_steps {
 	
 	@Then("The item is added to the item list table")
 	public void the_item_is_added_to_the_item_list_table() {
-
-		items.items_page_filter_btn.click();
+		
+		utils.clickWithActionsClass(items.items_page_filter_btn);
+		//items.items_page_filter_btn.click();
+		
 		utils.waitForElementToBeVisible(items.items_page_filter_name_box);
 		items.items_page_filter_name_box.sendKeys(itemname);
 		
