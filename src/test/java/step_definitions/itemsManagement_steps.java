@@ -84,7 +84,13 @@ public class itemsManagement_steps {
 
 	
 	@Then("The item is added to the item list table")
-	public void the_item_is_added_to_the_item_list_table() {
+	public void the_item_is_added_to_the_item_list_table() throws InterruptedException {
+		
+		
+		if (items.items_success_message.isDisplayed()) {
+
+			Thread.sleep(5);			
+		}
 		
 		utils.clickWithActionsClass(items.items_page_filter_btn);
 		//items.items_page_filter_btn.click();
