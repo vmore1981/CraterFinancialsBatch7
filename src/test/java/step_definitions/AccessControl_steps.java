@@ -13,12 +13,14 @@ import utils.Driver;
 
 
 
+
 public class AccessControl_steps {
 
 	
 	Access_control_page acp = new Access_control_page();
 	BrowserUtils actionutils = new BrowserUtils();
-	
+	//String useremail = "";
+	//String userpassword = "";
 		
 	
 	
@@ -92,4 +94,39 @@ public class AccessControl_steps {
 		
 	}
  	
+	String userEmail;
+	String userPassword;
+	
+	//Invalid user tests
+	
+	@When("I enter username {string} and invalid password {string} ")
+	public void i_enter_username_and_invalid_password(String useremail, String userpassword) {
+		
+		userEmail = useremail;
+		userPassword = userpassword;
+			
+		
+		actionutils.sendkeysWithActionsClass( acp.login_username, useremail);
+		actionutils.sendkeysWithActionsClass( acp.login_password, userpassword);
+	      
+	
+	}
+	@Then("I should not be logged in")
+	public void i_should_not_be_logged_in() {
+				
+		if (userEmail == "" || userPassword == "") {
+			actionutils.waitForElementToBeVisible(acp.login_field_is_required);
+			Assert.assertTrue(acp.login_field_is_required.isDisplayed());
+		} else {
+			actionutils.waitForElementToBeVisible(acp.login_credentials_require_message);
+			Assert.assertTrue(acp.login_credentials_require_message.isDisplayed());
+		}
+			
+	
+	}
+	
+	
+	
+	
+	
 }
