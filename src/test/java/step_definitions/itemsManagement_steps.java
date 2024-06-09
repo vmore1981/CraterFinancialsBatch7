@@ -88,7 +88,7 @@ public class itemsManagement_steps {
 		
 		
 		//if (items.items_success_message.isDisplayed()) {
-		//	Thread.sleep(5000);			
+		 //	Thread.sleep(5000);			
 		//}
 	
 		items.items_success_message.click();

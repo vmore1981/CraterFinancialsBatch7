@@ -12,7 +12,7 @@ import io.cucumber.junit.CucumberOptions;
 		plugin = {"pretty", "html:reports/cucumber_results.html", "json:reports/cucumber_results.json"},
 		features = "./src/test/resources/features",
 		glue="step_definitions",
-		tags="@update_items",
+		tags="@invalid_login",
 		dryRun=true		
 		)
 

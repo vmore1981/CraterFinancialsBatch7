@@ -61,7 +61,7 @@ Feature: Access control user management. Use cases for app access control
   @invalid_login
   Scenario: As a user, I should not be able to login with invalid credentials
     Given I am on the login page
-    When I enter invalid username <"username"> and invalid password <"password">
+    When I enter username <"username"> and invalid password <"password">
     And I click login button
     Then I should not be logged in
 
