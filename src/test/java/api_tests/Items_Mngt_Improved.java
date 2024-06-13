@@ -1,31 +1,37 @@
 package api_tests;
 
+import static io.restassured.RestAssured.given;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
+import org.hamcrest.Matchers;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static io.restassured.RestAssured.*;
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import utils.BrowserUtils;
 import utils.DataReader;
 
-public class Items_management_api {
+public class Items_Mngt_Improved {
 
-	
 	String token;
 	String baseurl = DataReader.getProperty("url");
 	BrowserUtils utils = new BrowserUtils();
 	int item_id;
 	
 	Response response;
-	 
-	@Test (groups = {"smoke-tests"})
+	
+	RequestSpecification specs;
+	
+	
+	@Test (groups= {"regression", "smoke_test"})
 	public void login_test() {
+		
+		
 		
 		String payload = "{\n"
 				+ "\n"
@@ -35,25 +41,28 @@ public class Items_management_api {
 				+ "\n"
 				+ "}";
 		 
-		response = given().contentType("application/json").body(payload)
-				.when().post(baseurl + "/api/v1/auth/login");
+		specs = RestAssured.given();
+		specs.baseUri(baseurl);
+		specs.contentType("application/json").body(payload);
+
+		response = specs.post(baseurl + "/api/v1/auth/login");
 				
 		response.prettyPrint();
-		
-		//System.out.println(response);
-		
 		token = response.jsonPath().get("token");
 		System.out.println(token);		
+		
+		RestAssured.baseURI = DataReader.getProperty("app_url");
+		
 	}
 	
 
 	
-	@Test (dependsOnMethods = {"login_test"}, groups = {"regression", "smoke-tests"})
+	@Test (dependsOnMethods = {"login_test"}, groups = {"smoke_test"})
 	public void list_all_items() {
 				
-		response = given().accept("application/json").auth().oauth2("Bearer " + token)
-				.when().get(baseurl + "/api/v1/items");
+		specs.baseUri(baseurl).accept("application/json").auth().oauth2("Bearer " + token);
 		
+		response = specs.get(baseurl + "/api/v1/items");
 		
 		// response.prettyPrint();
 		
@@ -62,7 +71,7 @@ public class Items_management_api {
 	}
 	
 	
-	@Test (dependsOnMethods= {"login_test"})
+	@Test (dependsOnMethods= {"login_test"}, groups = {"smoke_test"})
 	public void create_item() {
 		
 		Map<String, Object> payload = new HashMap<>();
@@ -72,10 +81,15 @@ public class Items_management_api {
 		payload.put("unit_id", 11);
 		payload.put("description", "nice backpack");
 		
-		response = 
-				given().auth().oauth2("Bearer " + token).body(payload).contentType("application/json")
-				.when().post(baseurl + "/api/v1/items");
+		Map<String, Object> headerObj = new HashMap<>();
+		headerObj.put("Content_Type", "application/json");
+		headerObj.put("Authorization", "Bearer " + token);
 		
+		response = given()
+				.headers(headerObj)
+				.body(payload)
+				.when().post(baseurl + "/api/v1/items");
+
 		item_id = response.jsonPath().get("data.id");
 		
 		String item_name = response.jsonPath().get("data[0].name");
@@ -131,8 +145,59 @@ public class Items_management_api {
 		boolean deleteSuccess = response.jsonPath().get("success");		
 	
 		Assert.assertTrue(deleteSuccess);
+	}
+	
+	// demo test for query parameters
+	
+	@Test
+	public void petStore_findByStatus() {
+		
+		response = given()
+		.accept("application/json")
+		.queryParam("status", "available")
+		.when().get("https://petstore.swagger.io/v2/pet/findByStatus");
+		
+		response.prettyPrint();
+		response.then().statusCode(200);
+		
+	}
+	
+	@Test 
+	public void petStore_findByStatus_chainValidation() {
+		
+		given()
+		.accept("application/json")
+		.queryParam("status", "available")
+		.when()
+		.get("https://petstore.swagger.io/v2/pet/findByStatus")
+		.then()
+		.assertThat().statusCode(200)
+		.and().assertThat().contentType("application/json")
+		.and().assertThat().body("[0].name", Matchers.equalTo("doggie"));
+	}
+	
+	// invalid API test case demo
+
+	@Test 
+	public void petStore_invalid_endpoint() {
+		
+		response = given()
+		.accept("application/json")
+		.when()
+		.get("https://petstore.swagger.io/v2/pet/" + 7);
+		
+		response.prettyPrint();
+		response
+		.then()
+		.assertThat().statusCode(404)
+		.and().assertThat().contentType("application/json")
+		.and().assertThat().body("message", Matchers.equalTo("Pet not found"));
 		
 	
 	}
+	
+	
+	
+	
 	
 }
