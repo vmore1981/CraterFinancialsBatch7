@@ -3,7 +3,7 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
 
-<suite name="Crater_Regression">
+<suite name="Crater_Regression" parallel="methods" thread-count="2">
 	
 	<test name = "Crater Regression Tests"> 
 	
